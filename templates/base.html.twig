@@ -11,30 +11,40 @@
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-			$(listing).ready(function() {
-    			$('#example').DataTable();
-			} );
-        {% endblock %}
     </head>
     <body>
-       {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
+
+
+		<style>
+			.example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+			.example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+		</style>
+
+	<div class="example-wrapper">
+
+	{# templates/base.html.twig #}
+
+	{# read and display just one flash message type #}
+
+
     <h1>Creation d'une tâche !</h1>
+{% block body %}
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">
+				{{ message }}
+			</div>
+		{% endfor %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/xampp/htdocs/task_app/src/Controller/TaskControlerController.php'|file_link(0) }}">src/Controller/TaskControlerController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/xampp/htdocs/task_app/templates/task_controler/index.html.twig'|file_link(0) }}">templates/task_controler/index.html.twig</a></code></li>
-    </ul>
-</div>
+		{% for message in app.flashes('danger') %}
+			<div class="alert alert-danger">
+				{{ message }}
+			</div>
+		{% endfor %}
 {% endblock %}
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 
