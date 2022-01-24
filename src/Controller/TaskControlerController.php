@@ -42,40 +42,17 @@ class TaskControlerController extends AbstractController
 		$task->setDueDateTask(new \DateTime('tomorrow'));
 		$task->setPriorityTask('Choisir la priorité');
 
-        $form = $this->createFormBuilder($task)
+        $form = $this->createFormBuilder($task) 
             ->add('nameTask', TextType::class,['attr' => ['class' => 'form-control']])
             ->add('descriptionTask', TextareaType::class,['attr' => ['class' => 'form-control']])
 			->add('dueDateTask', DateType::class,["widget"=>"single_text",'attr' => ['class' => 'form-control']])
-			->add('priorityTask', ChoiceType::class, [
-                'attr' => ['class' => 'form-select'],
-                    'choices'  => [
-                        'Haute' => 'haute',
-                        'Normale' => 'normal',
-                        'Basse' => 'basse',
-                    ],
-            ])
-
-			->add('category', EntityType::class, [
-							// looks for choices from this entity
-							'class' => Categories::class,
-
-							// uses the User.username property as the visible option string
-							'choice_label' => 'libelleCategory',
-
-							// used to render a select box, check boxes or radios
-							// 'multiple' => true,
-							// 'expanded' => true,
-						])
+			->add('priorityTask', ChoiceType::class, ['attr' => ['class' => 'form-select'], 'choices'  => ['Haute' => 'haute', 'Normale' => 'normal', 'Basse' => 'basse', ]])
+            ->add('category', EntityType::class, ['class' => Categories::class, 'choice_label' => 'libelleCategory', 'attr' => ['class' => 'form-select mb-4']])
             ->add('save', SubmitType::class, ['label' => 'Create Task','attr' => ['class' => 'btn btn-primary']])
 
             ->getForm();
 
-		        $form->handleRequest($request);
-					if ($form->isSubmitted() && $form->isValid()) {
-						// $form->getData() holds the submitted values
-						// but, the original `$task` variable has also been updated
-						$task = $form->getData();
-			
+
 
 		$task->setCreatedDateTask(new \DateTime('today'));
 						// ... perform some action, such as saving the task to the database
@@ -87,7 +64,7 @@ class TaskControlerController extends AbstractController
 				$this->addFlash('success', 'Tâche créée !');
 
 						return $this->redirectToRoute('task_listing');
-					}
+                        
         return $this->renderForm('task_controler/create.html.twig', [
             'form' => $form,
         ]);
@@ -117,22 +94,24 @@ class TaskControlerController extends AbstractController
             ->add('category', EntityType::class, ['label' => 'Catégorie de la tâche :', 'class' => Categories::class,'choice_label' => 'libelleCategory', 'attr' => ['class' => 'form-select mb-4'],])
             ->add('save', SubmitType::class, ['label' => 'Modifier la tâche','attr' => ['class' => 'btn btn-primary']])
             ->getForm();
+
 		$form->handleRequest($request);
-			if ($form->isSubmitted() && $form->isValid()) {
-				// $form->getData() holds the submitted values
-				// but, the original $task variable has also been updated
-				$task = $form->getData();
 
-				$task->setCreatedDateTask(new \DateTime('today'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original $task variable has also been updated
+            $task = $form->getData();
 
-				// ... perform some action, such as saving the task to the database
-				$entityManager->persist($task);
+            $task->setCreatedDateTask(new \DateTime('today'));
 
-				// actually executes the queries (i.e. the INSERT query)
-				$entityManager->flush();
-				 $this->addFlash('success', 'Tâche modifiée !');
-				return $this->redirectToRoute('task_listing');
-			}
+            // ... perform some action, such as saving the task to the database
+            $entityManager->persist($task);
+
+            // actually executes the queries (i.e. the INSERT query)
+            $entityManager->flush();
+                $this->addFlash('success', 'Tâche modifiée !');
+            return $this->redirectToRoute('task_listing');
+        }
 
         return $this->renderForm('task_controler/edit.html.twig', [
             'form' => $form,

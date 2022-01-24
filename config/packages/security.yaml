@@ -40,6 +40,13 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/task, roles: ROLE_USER }
 
+    # La partie role_hierarchy contient la hiérarchie des rôles
+    # Un éditeur sera également utilisateur
+    # Un administrateur sera également éditeur et donc utilisateur
+    # role_hierarchy:
+    #     ROLE_EDITOR: ROLE_USER
+    #     ROLE_ADMIN: ROLE_EDITOR
+
 when@test:
     security:
         password_hashers:
