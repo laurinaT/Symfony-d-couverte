@@ -15,7 +15,7 @@ class Categories
     /**
      * @var int
      *
-     * @ORM\Column(name="id_category", type="smallint", nullable=true)
+     * @ORM\Column(name="id_category", type="smallint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -24,7 +24,7 @@ class Categories
     /**
      * @var string
      *
-     * @ORM\Column(name="libelle_category", type="string", length=100, nullable=true)
+     * @ORM\Column(name="libelle_category", type="string", length=100, nullable=false)
      */
     private $libelleCategory;
 
