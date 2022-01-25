@@ -37,10 +37,7 @@ class TaskControlerController extends AbstractController
 		$entityManager = $doctrine->getManager();
         // creates a task object and initializes some data for this example
         $task = new Task();
-        $task->setNameTask('Tapez le nom de votre tâche');
-        $task->setDescriptionTask('écrivez une description');
 		$task->setDueDateTask(new \DateTime('tomorrow'));
-		$task->setPriorityTask('Choisir la priorité');
 
         $form = $this->createFormBuilder($task) 
             ->add('nameTask', TextType::class,['attr' => ['class' => 'form-control']])
@@ -51,19 +48,24 @@ class TaskControlerController extends AbstractController
             ->add('save', SubmitType::class, ['label' => 'Create Task','attr' => ['class' => 'btn btn-primary']])
 
             ->getForm();
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
 
 
+                $task->setCreatedDateTask(new \DateTime('today'));
+                                // ... perform some action, such as saving the task to the database
+                        // tell Doctrine you want to (eventually) save the Product (no queries yet)
+                        $task -> setIdUser($this->getUser());
+                        $task = $form->getData();
+                        
+                        $entityManager->persist($task);
 
-		$task->setCreatedDateTask(new \DateTime('today'));
-						// ... perform some action, such as saving the task to the database
-				 // tell Doctrine you want to (eventually) save the Product (no queries yet)
-        		$entityManager->persist($task);
+                        // actually executes the queries (i.e. the INSERT query)
+                        $entityManager->flush();
+                        $this->addFlash('success', 'Tâche créée !');
 
-				// actually executes the queries (i.e. the INSERT query)
-				$entityManager->flush();
-				$this->addFlash('success', 'Tâche créée !');
-
-						return $this->redirectToRoute('task_listing');
+                                return $this->redirectToRoute('task_listing');
+            }
                         
         return $this->renderForm('task_controler/create.html.twig', [
             'form' => $form,
@@ -71,9 +73,9 @@ class TaskControlerController extends AbstractController
     }
 
 	#[Route('/task/listing', name: 'task_listing')]
-    public function listing(ManagerRegistry $doctrine): Response
+    public function listing(ManagerRegistry $doctrine) : Response
     {
-		$tasks = $doctrine->getRepository(task::class)->findAll();
+		$tasks = $doctrine->getRepository(task::class)->findBy(array('id_user'=>$this->getUser()));
         return $this->render('task_controler/listing.html.twig', [
             'tasks' => $tasks,
         ]);

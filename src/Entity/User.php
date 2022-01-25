@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isVerified = false;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="id_user")
+     */
+    private $tasks;
+
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -144,5 +156,36 @@ $this->avatar = $avatar;
 
 return $this;
 
+}
+
+/**
+ * @return Collection|Task[]
+ */
+public function getTasks(): Collection
+{
+    return $this->tasks;
+}
+
+// cette fonction ajoute une tâche
+public function addTask(Task $task): self
+{
+    if (!$this->tasks->contains($task)) {
+        $this->tasks[] = $task;
+        $task->setIdUser($this);
+    }
+
+    return $this;
+}
+
+public function removeTask(Task $task): self
+{
+    if ($this->tasks->removeElement($task)) {
+        // set the owning side to null (unless already changed)
+        if ($task->getIdUser() === $this) {
+            $task->setIdUser(null);
+        }
+    }
+
+    return $this;
 }
 }

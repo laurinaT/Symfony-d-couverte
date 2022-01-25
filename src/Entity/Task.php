@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Categories;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -65,6 +66,12 @@ class Task
      * })
      */
     private $category;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=user::class, inversedBy="task")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $id_user;
 
     public function getIdTask(): ?int
     {
@@ -139,6 +146,18 @@ class Task
     public function setCategory(?Categories $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getIdUser(): ?user
+    {
+        return $this->id_user;
+    }
+
+    public function setIdUser(?user $id_user): self
+    {
+        $this->id_user = $id_user;
 
         return $this;
     }
